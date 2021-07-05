@@ -4,7 +4,7 @@ const https = require("https");
 const { Client } = require("@googlemaps/google-maps-services-js");
 
 const app = express();
-const port = 4000;
+const port = process.env.PORT || 4000;
 
 app.set("view engine", "ejs");
 app.use(express.urlencoded({ extended: true }));
