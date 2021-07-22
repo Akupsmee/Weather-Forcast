@@ -1,6 +1,7 @@
 const dotenv = require("dotenv").config();
 const express = require("express");
 const https = require("https");
+const axios = require("axios")
 const { Client } = require("@googlemaps/google-maps-services-js");
 
 const app = express();
@@ -10,17 +11,42 @@ app.set("view engine", "ejs");
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static("public"));
 
-let weather = {};
 let query = "Bremen";
+const id = process.env.APP_ID;
+const unit = "metric";
+
+// let d = async()=>{
+//   try {
+//      const resp =  await axios.get(`https://api.openweathermap.org/data/2.5/weather?q=${query}&appid=${id}&units=${unit}`)
+//   //  return resp.data  
+//   const {main}= resp.data
+//   console.log(main);
+    
+//   } catch (error) {
+//     console.log(error);
+//   }
+// }
+// d()
+// let wait = async ()=>{
+//   const {main, weather} = await d()
+// }
+
+// wait()
+
+
+
+// let weather = d.main.temp;
+// let description = d.weather[0].description
+// let feels = weather.feels
 const client = new Client({});
 
 app.get("/", (req, res) => {
-  res.render("index", { weather: weather, query: query, client });
+  res.render("index", { weather, query: query, client });
 });
 
 app.post("/", (req, res) => {
   const query = req.body.cityName;
-    
+  
 
   const id = process.env.APP_ID;
   const unit = "metric";
@@ -29,8 +55,7 @@ app.post("/", (req, res) => {
 
   https.get(url, (response) => {
     response.on("data", (data) => {
-      const d = JSON.parse(data);
-      console.log(d);
+      d = JSON.parse(data);
       weather = {
         temperature: d.main.temp,
         description: d.weather[0].description,
